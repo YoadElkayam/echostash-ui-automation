@@ -25,6 +25,7 @@ allure-report/
 test-results/
 report.html
 assets/
+.pytest_cache/
 
 # Playwright
 playwright/.cache/
