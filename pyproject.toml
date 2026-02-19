@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "echostash-ui-automation"
+version = "0.1.0"
+description = "Echostash UI automation tests with Playwright"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "sanity: Quick sanity checks",
+    "regression: Full regression suite",
+]
+addopts = "--strict-markers"

@@ -1,0 +1,75 @@
+name: UI Sanity Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: "stage"
+        type: choice
+        options:
+          - local
+          - stage
+          - prod
+  pull_request:
+    branches: [main]
+
+jobs:
+  sanity:
+    name: Run Sanity Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
+      - name: Run sanity tests
+        run: |
+          pytest tests/sanity/ \
+            -m sanity \
+            --env ${{ github.event.inputs.environment || 'stage' }} \
+            --html=report.html \
+            --self-contained-html \
+            --alluredir=allure-results \
+            -n auto \
+            -v
+        env:
+          CI: true
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-html-report
+          path: report.html
+          retention-days: 14
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-allure-results
+          path: allure-results/
+          retention-days: 14
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-test-results
+          path: test-results/
+          retention-days: 14
