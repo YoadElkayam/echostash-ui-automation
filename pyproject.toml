@@ -11,7 +11,10 @@ requires-python = ">=3.11"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
-    "sanity: Quick sanity checks",
+    "sanity: Quick smoke tests for CI",
     "regression: Full regression suite",
+    "mobile: Mobile viewport tests",
+    "admin: Admin panel tests",
+    "eval: Evaluation feature tests",
 ]
 addopts = "--strict-markers"

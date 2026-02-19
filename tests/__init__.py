@@ -1,0 +1,1 @@
+"""Echostash UI automation tests."""
